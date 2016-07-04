@@ -432,6 +432,7 @@ kind: Namespace
 metadata:
   name: kube-system
 EOF
+        export KUBERNETES_PROVIDER=local
         ${KUBECTL} config set-cluster local --server=http://${API_HOST}:${API_PORT} --insecure-skip-tls-verify=true
         ${KUBECTL} config set-context local --cluster=local
         ${KUBECTL} config use-context local
