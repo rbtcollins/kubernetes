@@ -426,18 +426,11 @@ function start_kubedns {
           sed -i -e "/{{ pillar\['federations_domain_map'\] }}/d" skydns-rc.yaml
         fi
         sed -e "s/{{ pillar\['dns_server'\] }}/${DNS_SERVER_IP}/g" "${KUBE_ROOT}/cluster/saltbase/salt/kube-dns/skydns-svc.yaml.in" >| skydns-svc.yaml
-        cat <<EOF >namespace.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: kube-system
-EOF
         export KUBERNETES_PROVIDER=local
         ${KUBECTL} config set-cluster local --server=http://${API_HOST}:${API_PORT} --insecure-skip-tls-verify=true
         ${KUBECTL} config set-context local --cluster=local
         ${KUBECTL} config use-context local
 
-        ${KUBECTL} create -f namespace.yaml
         # use kubectl to create skydns rc and service
         ${KUBECTL} --namespace=kube-system create -f skydns-rc.yaml
         ${KUBECTL} --namespace=kube-system create -f skydns-svc.yaml
